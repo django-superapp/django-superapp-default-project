@@ -16,6 +16,10 @@ install-requirements: venv/touchfile
 	. venv/bin/activate && pip install psycopg2-binary --force-reinstall --no-cache-dir; \
 	cd superapp/apps/admin_portal/tailwind && npm install
 
+setup-sample-env:
+	cp .env.local.example .env.local
+	cp .env.example .env
+
 start-docker:
 	docker-compose up -d --build
 
