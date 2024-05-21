@@ -1,6 +1,3 @@
 _subdirectory: .
 _answers_relpath: ".copier-answers.yml"
 
-project_name:
-  type: str
-  help: Your project name
