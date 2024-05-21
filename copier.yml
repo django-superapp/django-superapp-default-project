@@ -1,5 +1,5 @@
 _subdirectory: .
-answers_relpath: ".copier-answers.yml"
+_answers_relpath: ".copier-answers.yml"
 
 project_name:
   type: str
