@@ -1,9 +1,11 @@
 SHELL := /bin/bash
+ifneq ("$(wildcard .env.local)","")
 include .env.local
 export $(shell sed 's/=.*//' .env.local)
 
 # Update PATH variable
 PATH := $(shell sed -n 's/^PATH=//p' .env.local):$(PATH):/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin
+endif
 
 venv: venv/touchfile
 
@@ -17,8 +19,9 @@ install-requirements: venv/touchfile
 	cd superapp/apps/admin_portal/tailwind && npm install
 
 setup-sample-env:
-	cp .env.local.example .env.local
-	cp .env.example .env
+	cp .env.local.example .env.local;
+	cp .env.example .env;
+
 
 start-docker:
 	docker-compose up -d --build
