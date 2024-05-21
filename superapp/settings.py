@@ -172,4 +172,3 @@ extend_with_superapp_settings(
     main_settings=globals(),
     superapp_apps=superapp_apps
 )
-print(json.dumps(INSTALLED_APPS))

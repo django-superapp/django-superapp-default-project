@@ -14,7 +14,7 @@ venv/touchfile: requirements.txt
 	touch venv/touchfile
 
 install-requirements: venv/touchfile
-	. venv/bin/activate && find . -name "requirements.txt" -print0 | xargs -0 -n1 pip install -r; \
+	. venv/bin/activate && find . -name "requirements.txt" -print0 | xargs -0 -n1 pip install --upgrade -r ; \
 	. venv/bin/activate && pip install psycopg2-binary --force-reinstall --no-cache-dir; \
 	cd superapp/apps/admin_portal/tailwind && npm install
 

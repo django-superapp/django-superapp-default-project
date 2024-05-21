@@ -3,6 +3,9 @@ from django.utils.translation import gettext_lazy as _
 
 
 def extend_superapp_settings(main_settings):
+    main_settings['INSTALLED_APPS'] += [
+        'superapp.apps.admin_portal',
+    ]
     original_unfold_settings = main_settings.get('UNFOLD', {})
     main_settings['UNFOLD'] = {
         "SITE_HEADER": _("SuperApp Demo"),
