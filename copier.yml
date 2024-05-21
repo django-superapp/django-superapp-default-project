@@ -1,1 +1,5 @@
 _subdirectory: .
+
+project_name:
+  type: str
+  help: Your project name
