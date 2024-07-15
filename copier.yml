@@ -1,3 +1,4 @@
 _answers_relpath: ".copier-answers.yml"
 _exclude:
   - .github
+  - ".git"
