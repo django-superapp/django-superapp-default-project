@@ -9,7 +9,6 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
-import json
 import os
 
 from os import environ
@@ -19,7 +18,7 @@ import dj_database_url
 from django.core.management.utils import get_random_secret_key
 from django.utils.translation import gettext_lazy as _
 
-from django_superapp.settings import extend_with_superapp_settings
+from django_superapp.settings import extend_superapp_settings
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -50,7 +49,6 @@ CSRF_TRUSTED_ORIGINS = [host for host in CSRF_TRUSTED_ORIGINS if host.strip()]
 ######################################################################
 INSTALLED_APPS = [
     'django_superapp',
-    "superapp.apps",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -58,8 +56,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "whitenoise.runserver_nostatic",
     "django.contrib.staticfiles",
-    "debug_toolbar",
-    "import_export",
 ]
 
 ######################################################################
@@ -168,7 +164,7 @@ X_FRAME_OPTIONS = "SAMEORIGIN"
 # SUPERAPP dynamic settings
 ######################################################################
 from . import apps as superapp_apps
-extend_with_superapp_settings(
+extend_superapp_settings(
     main_settings=globals(),
     superapp_apps=superapp_apps
 )

@@ -1,7 +1,7 @@
 services:
   postgres:
     image: postgres:13
-    restart: on-failure
+    restart: unless-stopped
     volumes:
       - db_data:/var/lib/postgresql/data
     env_file:
@@ -20,7 +20,7 @@ services:
         max-size: "100m" # file size
   redis:
     image: redis:7.2-alpine
-    restart: on-failure
+    restart: unless-stopped
     ports:
       - "6379:6379"
     environment:
@@ -32,6 +32,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    restart: unless-stopped
     command: bash -c "./scripts/run-server.sh"
     depends_on:
       - "postgres"

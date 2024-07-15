@@ -8,8 +8,8 @@ def extend_superapp_settings(main_settings):
     ]
     original_unfold_settings = main_settings.get('UNFOLD', {})
     main_settings['UNFOLD'] = {
-        "SITE_HEADER": _("SuperApp Demo"),
-        "SITE_TITLE": _("SuperApp Demo"),
+        "SITE_HEADER": _("SuperApp Default Project"),
+        "SITE_TITLE": _("SuperApp Default Project"),
         "SITE_SYMBOL": "settings",
         "SHOW_HISTORY": False,
         "SITE_LOGO": {

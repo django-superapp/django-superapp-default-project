@@ -3,3 +3,4 @@ whitenoise==6.6.*
 django-debug-toolbar==4.3.*
 dj-database-url==2.1.0
 django_superapp>=1.0.*
+redis>=5.0.*
