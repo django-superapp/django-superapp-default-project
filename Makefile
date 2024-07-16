@@ -43,7 +43,7 @@ collectstatic:
 	python3 manage.py collectstatic --no-input
 
 start-tailwind-watch:
-	cd IdentityManager/tailwind; \
+	cd superapp/apps/admin_portal/tailwind; \
 	npm run tailwind:watch
 
 
