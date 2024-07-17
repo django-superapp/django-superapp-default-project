@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: postgres:13
+    image: timescale/timescaledb-ha:pg16
     restart: unless-stopped
     volumes:
       - db_data:/var/lib/postgresql/data
