@@ -357,3 +357,4 @@ pyrightconfig.json
 
 .env
 .env.local
+superapp_fork
