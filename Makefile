@@ -28,7 +28,7 @@ start-docker:
 
 destroy-docker:
 	docker-compose stop
-	docker-compose down
+	docker-compose down -v
 
 migrate:
 	python3 manage.py migrate
