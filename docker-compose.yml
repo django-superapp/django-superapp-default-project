@@ -2,8 +2,9 @@ services:
   postgres:
     image: timescale/timescaledb-ha:pg16
     restart: unless-stopped
+    shm_size: 2gb
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - db_data:/home/postgres/pgdata/data
     env_file:
       - .env
     ports:
