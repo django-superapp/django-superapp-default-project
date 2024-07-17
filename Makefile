@@ -14,7 +14,7 @@ venv/touchfile: requirements.txt
 	touch venv/touchfile
 
 install-requirements: venv/touchfile
-	. venv/bin/activate && find . -name "requirements.txt" -print0 | xargs -0 -n1 pip install --upgrade -r ; \
+	. venv/bin/activate && ./scripts/generate-requirements.sh | pip install --upgrade -r /dev/stdin
 	. venv/bin/activate && pip install psycopg2-binary --force-reinstall --no-cache-dir; \
 	cd superapp/apps/admin_portal/tailwind && npm install
 
@@ -28,7 +28,7 @@ start-docker:
 
 destroy-docker:
 	docker-compose stop
-	docker-compose down
+	docker-compose down -v
 
 migrate:
 	python3 manage.py migrate
@@ -63,4 +63,3 @@ create-fixtures:
 
 load-fixtures:
 	python3 manage.py loaddata fixtures/initial_data.json
-

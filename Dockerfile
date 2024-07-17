@@ -1,3 +1,8 @@
+FROM python:3.11 AS requirements
+WORKDIR /app
+COPY . /app
+RUN ./scripts/generate-requirements.sh > ./unified_requirements.txt
+
 FROM python:3.11
 
 WORKDIR /app
@@ -9,14 +14,17 @@ ENV PYTHONUNBUFFERED 1
 RUN apt-get update
 RUN apt-get install gettext -y
 
-COPY requirements.txt /app/requirements.txt
-RUN pip install --no-cache-dir --upgrade -r requirements.txt
-RUN pip install psycopg2-binary --force-reinstall --no-cache-dir;
+COPY --from=requirements /app/unified_requirements.txt /app/
+RUN cat /app/unified_requirements.txt | pip install -r /dev/stdin;
+RUN pip install psycopg2-binary;
 
 COPY . /app
 
-RUN find . -name "requirements.txt" -print0 | xargs -0 -n1 pip install --upgrade -r;
+RUN python manage.py collectstatic --noinput
 
-EXPOSE 8000
+RUN useradd -m -u 1001 -s /bin/bash app
+USER 1001
+
+EXPOSE 8080
 
 CMD ["/app/scripts/run-server.sh"]
