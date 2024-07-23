@@ -41,14 +41,14 @@ if DEBUG:
 
 CSRF_TRUSTED_ORIGINS = environ.get(
     "CSRF_TRUSTED_ORIGINS", ""
-).split(",") + ['http://localhost:8000', 'http://localhost:3000']
+).split(",") + ['http://localhost:8080', 'http://localhost:3000']
 CSRF_TRUSTED_ORIGINS = [host for host in CSRF_TRUSTED_ORIGINS if host.strip()]
 
 ######################################################################
 # Apps
 ######################################################################
 INSTALLED_APPS = [
-    'django_superapp',
+    "django_superapp",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -72,6 +72,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ######################################################################
@@ -112,7 +113,7 @@ DATABASES = {
 CACHES = {
     'default': {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": os.environ['REDIS_BROKER_URL'],
+        "LOCATION": os.environ.get('REDIS_BROKER_URL'),
     }
 } if os.environ.get('REDIS_BROKER_URL', '') != '' else {
     'default': {
@@ -142,9 +143,11 @@ LOCALE_PATHS = [os.path.join(BASE_DIR, 'locale')]
 ######################################################################
 STATIC_URL = "/static/"
 
-# STATICFILES_DIRS = [BASE_DIR / "superapp" / "static"]
+STATICFILES_DIRS = [BASE_DIR / "superapp" / "static"]
 
-STATIC_ROOT = BASE_DIR / "superapp" / "static"
+STATIC_ROOT = BASE_DIR / "superapp" / "staticfiles"
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 MEDIA_ROOT = BASE_DIR / "media"
 
@@ -168,3 +171,4 @@ extend_superapp_settings(
     main_settings=globals(),
     superapp_apps=superapp_apps
 )
+
