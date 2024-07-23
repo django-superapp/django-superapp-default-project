@@ -26,6 +26,9 @@ setup-sample-env:
 start-docker:
 	docker-compose up -d --build
 
+stop-docker:
+	docker-compose stop
+
 destroy-docker:
 	docker-compose stop
 	docker-compose down -v
