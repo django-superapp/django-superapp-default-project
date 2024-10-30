@@ -192,7 +192,13 @@ STATICFILES_DIRS = [BASE_DIR / "superapp" / "static"]
 
 STATIC_ROOT = BASE_DIR / "superapp" / "staticfiles"
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
+
+# Whitenoise configuration
+WHITENOISE_MANIFEST_STRICT = False
+WHITENOISE_USE_FINDERS = True
+WHITENOISE_COMPRESS = True
+WHITENOISE_STATIC_PREFIX = STATIC_URL
 
 MEDIA_ROOT = BASE_DIR / "media"
 
@@ -216,4 +222,3 @@ extend_superapp_settings(
     main_settings=globals(),
     superapp_apps=superapp_apps
 )
-
