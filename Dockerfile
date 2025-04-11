@@ -22,7 +22,7 @@ COPY . /app
 
 RUN python manage.py collectstatic --noinput
 
-RUN useradd -m -u 1001 -s /bin/bash app
+RUN groupadd -g 1001 appgroup && useradd -m -u 1001 -g 1001 -s /bin/bash app
 USER 1001
 
 EXPOSE 8080
