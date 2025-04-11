@@ -116,7 +116,7 @@ class SampleModelAdmin(SuperAppModelAdmin):
 - Enforce Django security best practices (CSRF, XSS, SQL injection protections).
 
 ## Translation Convention
-- Add translation items explicitly in `AppTranslations` from `backend/superapp/apps/easywindow/enums.py`.
+- Make sure that every string which is displayed to the end user is using _('XXX') from Django.
 
 Follow Django and SuperApp documentation for detailed practices.
 
