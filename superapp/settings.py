@@ -45,7 +45,6 @@ CSRF_TRUSTED_ORIGINS = [host for host in CSRF_TRUSTED_ORIGINS if host.strip()]
 # Apps
 ######################################################################
 INSTALLED_APPS = [
-    "storages",
     "django_superapp",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -211,46 +210,6 @@ DEBUG_TOOLBAR_CONFIG = {"SHOW_TOOLBAR_CALLBACK": lambda request: DEBUG}
 ######################################################################
 X_FRAME_OPTIONS = "SAMEORIGIN"
 
-######################################################################
-# STORAGE
-######################################################################
-
-if environ.get("AWS_ACCESS_KEY_ID"):
-    AWS_ACCESS_KEY_ID = environ.get("AWS_ACCESS_KEY_ID")
-    AWS_SECRET_ACCESS_KEY = environ.get("AWS_SECRET_ACCESS_KEY")
-    AWS_STORAGE_BUCKET_NAME = environ.get("AWS_STORAGE_BUCKET_NAME")
-    AWS_ENDPOINT_URL = environ.get("AWS_ENDPOINT_URL")
-    AWS_S3_SIGNATURE_VERSION = environ.get("AWS_S3_SIGNATURE_VERSION")
-    AWS_S3_ADDRESSING_STYLE = environ.get("AWS_S3_ADDRESSING_STYLE")
-    AWS_S3_CUSTOM_DOMAIN = environ.get("AWS_S3_CUSTOM_DOMAIN")
-    STORAGES = {
-        "default": {
-            "BACKEND": "storages.backends.s3.S3Storage",
-            "OPTIONS": {
-            },
-        },
-        "staticfiles": {
-            "BACKEND": "storages.backends.s3.S3Storage",
-            "OPTIONS": {
-                "querystring_auth": False,
-                "default_acl": "public-read",
-            },
-        } if not DEBUG else {
-            "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
-            "OPTIONS": {},
-        },
-    }
-else:
-    STORAGES = {
-        "default": {
-            "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
-            "OPTIONS": {},
-        },
-        "staticfiles": {
-            "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
-            "OPTIONS": {},
-        },
-    }
 ######################################################################
 # SUPERAPP dynamic settings and urls
 ######################################################################
