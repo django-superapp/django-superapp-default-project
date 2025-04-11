@@ -90,12 +90,3 @@ create-fixtures:
 load-fixtures:
 	docker-compose exec web python3 manage.py loaddata \
 		fixtures/fixtures
-
-fix-docker-volume-permissions:
-	@groupadd -g 1001 -f appgroup
-	@id -u docker-user >/dev/null 2>&1 || useradd -m -u 1001 -g 1001 -s /bin/bash docker-user
-	@usermod -aG appgroup $$(whoami)
-	@usermod -aG appgroup docker-user
-	@chown -R docker-user:appgroup ./
-	@chmod -R 775 ./
-
