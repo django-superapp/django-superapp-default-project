@@ -360,3 +360,4 @@ pyrightconfig.json
 !.env.local.example
 superapp_fork
 superapp/staticfiles
+!.aider.conf.yml

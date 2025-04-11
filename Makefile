@@ -22,9 +22,17 @@ setup-sample-env:
 	cp .env.local.example .env.local;
 	cp .env.example .env;
 
+web-bash:
+	docker-compose exec -ti web bash
+
+web-logs:
+	docker-compose logs -f web -n 1000
 
 start-docker:
 	docker-compose up -d --build
+
+force-start-docker:
+	docker-compose up -d --build --force-recreate
 
 stop-docker:
 	docker-compose stop
@@ -33,36 +41,53 @@ destroy-docker:
 	docker-compose stop
 	docker-compose down -v
 
-migrate:
-	python3 manage.py migrate
-
 makemigrations:
-	python3 manage.py makemigrations
+	docker-compose run web python3 manage.py makemigrations
+
+migrate:
+	docker-compose run web python3 manage.py migrate
 
 createsuperuser:
-	python3 manage.py createsuperuser
+	docker-compose run web python3 manage.py createsuperuser
 
 collectstatic:
-	python3 manage.py collectstatic --no-input
+	docker-compose exec web python3 manage.py collectstatic --no-input
 
 start-tailwind-watch:
 	cd superapp/apps/admin_portal/tailwind; \
 	npm run tailwind:watch
 
+list_all_permissions:
+	docker-compose exec web python3 manage.py list_all_permissions
+
+list_all_urls_patterns:
+	docker-compose exec web python3 manage.py list_all_urls_patterns
 
 makemessages:
 	mkdir -p site-packages
-	ln -s /usr/local/lib/python33.11/site-packages/unfold site-packages/unfold
-	ln -s /usr/local/lib/python33.11/site-packages/django site-packages/django
-	python3 manage.py makemessages -l de -l en -i venv -s
-	rm -r site-packages
+	ln -s venv/lib/python3.13/site-packages/unfold site-packages/unfold
+	ln -s venv/lib/python3.13/site-packages/django site-packages/django
+	docker-compose exec web python3 manage.py makemessages -l ro -l en -i venv -s
+	rm -rf site-packages
 
 compilemessages:
-	python3 manage.py compilemessages
+	docker-compose exec web python3 manage.py compilemessages
+	rm -rf site-packages
+
+generate_django_translations:
+	docker-compose exec web python3 manage.py generate_django_translations
+
+generate_material_variant_prices:
+	docker-compose exec web python3 manage.py generate_material_variant_prices
+
+generate_translation_values:
+	docker-compose exec web python3 manage.py generate_translation_values
 
 
 create-fixtures:
-	python3 manage.py dumpdata --natural-foreign --natural-primary --indent 2 --output fixtures/initial_data.json
+	docker-compose exec web python3 manage.py dumpdata --natural-foreign --natural-primary --indent 2 --output fixtures/fixtures.json
 
 load-fixtures:
-	python3 manage.py loaddata fixtures/initial_data.json
+	docker-compose exec web python3 manage.py loaddata \
+		fixtures/fixtures
+

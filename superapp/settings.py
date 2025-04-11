@@ -10,16 +10,12 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 import os
-from logging.handlers import SysLogHandler
-
 from os import environ
 from pathlib import Path
 
 import dj_database_url
 from django.core.management.utils import get_random_secret_key
 from django.utils.translation import gettext_lazy as _
-
-from django_superapp.settings import extend_superapp_settings
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -49,6 +45,7 @@ CSRF_TRUSTED_ORIGINS = [host for host in CSRF_TRUSTED_ORIGINS if host.strip()]
 # Apps
 ######################################################################
 INSTALLED_APPS = [
+    "storages",
     "django_superapp",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -73,7 +70,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ######################################################################
@@ -106,6 +102,11 @@ WSGI_APPLICATION = 'superapp.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 DATABASES = {
     "default": dj_database_url.config(default=os.environ.get('DATABASE_URL'))
+} if os.environ.get('DATABASE_URL', '') != '' else {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
+    }
 }
 
 ######################################################################
@@ -144,13 +145,13 @@ LOGGING = {
             'class': 'logging.StreamHandler',
         },
         # Send info messages to syslog
-        'syslog':{
-            'level':'INFO',
-            'class': 'logging.handlers.SysLogHandler',
-            'facility': SysLogHandler.LOG_LOCAL2,
-            'address': '/dev/log',
-            'formatter': 'verbose',
-        },
+        # 'syslog': {
+        #     'level': 'INFO',
+        #     'class': 'logging.handlers.SysLogHandler',
+        #     'facility': SysLogHandler.LOG_LOCAL2,
+        #     'address': '/dev/log',
+        #     'formatter': 'verbose',
+        # },
         # Warning messages are sent to admin emails
         'mail_admins': {
             'level': 'WARNING',
@@ -161,7 +162,7 @@ LOGGING = {
     'loggers': {
         # This is the "catch all" logger
         '': {
-            'handlers': ['console', 'syslog', 'mail_admins',],
+            'handlers': ['console', 'mail_admins', ],
             'level': 'DEBUG',
             'propagate': False,
         },
@@ -171,18 +172,21 @@ LOGGING = {
 ######################################################################
 # Localization
 ######################################################################
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "en"
 
 TIME_ZONE = "Europe/Berlin"
 
 USE_I18N = True
-
+USE_L10N = True
 USE_TZ = True
 
 LANGUAGES = (
     ("en", _("English")),
+    ("ro", _("Română")),
+    ("de", _("German")),
 )
 LOCALE_PATHS = [os.path.join(BASE_DIR, 'locale')]
+LANGUAGE_COOKIE_NAME = 'django_language'
 
 ######################################################################
 # Static
@@ -192,8 +196,6 @@ STATIC_URL = "/static/"
 STATICFILES_DIRS = [BASE_DIR / "superapp" / "static"]
 
 STATIC_ROOT = BASE_DIR / "superapp" / "staticfiles"
-
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 MEDIA_ROOT = BASE_DIR / "media"
 
@@ -210,11 +212,52 @@ DEBUG_TOOLBAR_CONFIG = {"SHOW_TOOLBAR_CALLBACK": lambda request: DEBUG}
 X_FRAME_OPTIONS = "SAMEORIGIN"
 
 ######################################################################
-# SUPERAPP dynamic settings
+# STORAGE
 ######################################################################
+
+if environ.get("AWS_ACCESS_KEY_ID"):
+    AWS_ACCESS_KEY_ID = environ.get("AWS_ACCESS_KEY_ID")
+    AWS_SECRET_ACCESS_KEY = environ.get("AWS_SECRET_ACCESS_KEY")
+    AWS_STORAGE_BUCKET_NAME = environ.get("AWS_STORAGE_BUCKET_NAME")
+    AWS_ENDPOINT_URL = environ.get("AWS_ENDPOINT_URL")
+    AWS_S3_SIGNATURE_VERSION = environ.get("AWS_S3_SIGNATURE_VERSION")
+    AWS_S3_ADDRESSING_STYLE = environ.get("AWS_S3_ADDRESSING_STYLE")
+    AWS_S3_CUSTOM_DOMAIN = environ.get("AWS_S3_CUSTOM_DOMAIN")
+    STORAGES = {
+        "default": {
+            "BACKEND": "storages.backends.s3.S3Storage",
+            "OPTIONS": {
+            },
+        },
+        "staticfiles": {
+            "BACKEND": "storages.backends.s3.S3Storage",
+            "OPTIONS": {
+                "querystring_auth": False,
+                "default_acl": "public-read",
+            },
+        } if not DEBUG else {
+            "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
+            "OPTIONS": {},
+        },
+    }
+else:
+    STORAGES = {
+        "default": {
+            "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
+            "OPTIONS": {},
+        },
+        "staticfiles": {
+            "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
+            "OPTIONS": {},
+        },
+    }
+######################################################################
+# SUPERAPP dynamic settings and urls
+######################################################################
+from django_superapp.settings import extend_superapp_settings
 from . import apps as superapp_apps
+
 extend_superapp_settings(
     main_settings=globals(),
     superapp_apps=superapp_apps
 )
-

@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e;
 
-python manage.py migrate
+#python manage.py migrate
 
 # Check the DEBUG environment variable
 if [ "$DEBUG" = "true" ] || [ "$DEBUG" = "1" ] || [ "$DEBUG" = "t" ]; then

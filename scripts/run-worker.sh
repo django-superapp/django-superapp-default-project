@@ -10,3 +10,4 @@ else
     # Run the celery worker
     celery -A superapp worker --loglevel=INFO --beat --scheduler django_celery_beat.schedulers:DatabaseScheduler --concurrency=5
 fi
+
