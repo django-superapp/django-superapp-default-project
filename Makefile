@@ -90,4 +90,3 @@ create-fixtures:
 load-fixtures:
 	docker-compose exec web python3 manage.py loaddata \
 		fixtures/fixtures
-
